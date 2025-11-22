@@ -185,16 +185,14 @@ class _DashboardPageState extends State<DashboardPage> {
                           child: FloatingActionButton.extended(
                             backgroundColor: Colors.white,
                             onPressed: () async {
-                              final result = await Navigator.push(
+                              await Navigator.push(
                                 context,
                                 MaterialPageRoute(
                                   builder: (context) =>
                                       RentPage(car: car, user: widget.user),
                                 ),
                               );
-                              if (result == true) {
-                                setState(() {});
-                              }
+                              _checkExpiredRents();
                             },
                             label: Text(
                               "Rent",
@@ -333,7 +331,7 @@ class _DashboardPageState extends State<DashboardPage> {
                         ),
                         child: InkWell(
                           onTap: () async {
-                            final result = await Navigator.push(
+                            await Navigator.push(
                               context,
                               MaterialPageRoute(
                                 builder: (context) => RentDetailPage(
@@ -342,9 +340,7 @@ class _DashboardPageState extends State<DashboardPage> {
                                 ),
                               ),
                             );
-                            if (result == true) {
-                              setState(() {});
-                            }
+                            _checkExpiredRents();
                           },
                           borderRadius: BorderRadius.circular(12),
                           child: Padding(

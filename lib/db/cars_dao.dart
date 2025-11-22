@@ -27,7 +27,7 @@ class CarsDao {
         'carType': r['cartype'],
         'carPricePerDay': r['carpriceperday'],
         'carImagePath': r['carimagepath'],
-        'isAvailable': (r['isavailable'] == 1) || (r['isavailable'] == 1),
+        'isAvailable': r['isavailable'] == 1,
       };
       return Cars.fromMap(Map<String, dynamic>.from(mapped));
     }).toList();
