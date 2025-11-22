@@ -23,8 +23,9 @@ class DbHelper {
     final path = join(dbPath, dbName);
     return await openDatabase(
       path,
-      version: 1,
+      version: 3,
       onCreate: _onCreate,
+      onUpgrade: _onUpgrade,
       onConfigure: _onConfigure,
     );
   }
@@ -67,15 +68,24 @@ class DbHelper {
         FOREIGN KEY (carid) REFERENCES cars (carid) ON DELETE CASCADE
       )
     ''');
-    // Insert initial seed data for cars
     await _insertInitialCars(db);
+  }
+
+  Future _onUpgrade(Database db, int oldVersion, int newVersion) async {
+    if (oldVersion < 3) {
+      await db.execute('''
+        DELETE FROM cars 
+      ''');
+
+      await _insertInitialCars(db);
+    }
   }
 
   Future<void> _insertInitialCars(Database db) async {
     final initial = [
       {
         'carname': 'Toyota Crown 2.4',
-        'cartype': 'Luxury sedan / crossover hybrid',
+        'cartype': 'Luxury sedan',
         'carpriceperday': '2000000',
         'carimagepath': 'assets/images/toyotacrown.png',
         'isavailable': 1,
@@ -89,7 +99,7 @@ class DbHelper {
       },
       {
         'carname': 'MINI Coopoer S Cabrio',
-        'cartype': 'Convertible / hatchback',
+        'cartype': 'Hatchback',
         'carpriceperday': '3500000',
         'carimagepath': 'assets/images/minicoopers.png',
         'isavailable': 1,
@@ -119,7 +129,7 @@ class DbHelper {
 
     final batch = db.batch();
     for (final car in initial) {
-      batch.insert('cars', car);
+      batch.insert('cars', car, conflictAlgorithm: ConflictAlgorithm.ignore);
     }
     await batch.commit(noResult: true);
   }
