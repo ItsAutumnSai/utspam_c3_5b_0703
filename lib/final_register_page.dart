@@ -64,7 +64,7 @@ class _FinalRegisterPageState extends State<FinalRegisterPage> {
         Navigator.pushAndRemoveUntil(
           context,
           MaterialPageRoute(builder: (context) => LoginPage()),
-          (route) => false,
+          (route) => route.isFirst,
         );
       }
     }
