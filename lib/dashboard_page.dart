@@ -171,7 +171,8 @@ class _DashboardPageState extends State<DashboardPage> {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) => RentPage(car: car),
+                                  builder: (context) =>
+                                      RentPage(car: car, user: widget.user),
                                 ),
                               );
                             },
