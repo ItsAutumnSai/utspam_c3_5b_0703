@@ -61,7 +61,7 @@ class RentHistoryDao {
     final db = await _dbHelper.database;
     final rows = await db.rawQuery(
       '''
-      SELECT rh.*, c.carname, c.carpriceperday 
+      SELECT rh.*, c.carname, c.carpriceperday, c.carimagepath, c.cartype
       FROM renthistory rh
       INNER JOIN cars c ON rh.carid = c.carid
       WHERE rh.userid = ?
@@ -124,5 +124,18 @@ class RentHistoryDao {
         );
       }
     }
+  }
+
+  Future<int> updateRent(RentHistory rent) async {
+    final db = await _dbHelper.database;
+    final map = {
+      'userid': rent.userId,
+      'carid': rent.carId,
+      'rentdate': rent.rentDate,
+      'rentdurationdays': rent.rentDurationDays,
+      'isRentActive': rent.isRentActive,
+    };
+    _dbHelper.log('Updating rent history id: ${rent.id}');
+    return db.update('renthistory', map, where: 'id = ?', whereArgs: [rent.id]);
   }
 }
