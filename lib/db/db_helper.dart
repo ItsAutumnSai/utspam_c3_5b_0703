@@ -23,7 +23,7 @@ class DbHelper {
     final path = join(dbPath, dbName);
     return await openDatabase(
       path,
-      version: 4,
+      version: 6,
       onCreate: _onCreate,
       onUpgrade: _onUpgrade,
       onConfigure: _onConfigure,
@@ -72,12 +72,27 @@ class DbHelper {
   }
 
   Future _onUpgrade(Database db, int oldVersion, int newVersion) async {
-    if (oldVersion < 4) {
+    if (oldVersion < 6) {
       await db.execute('''
-        DELETE FROM cars 
+      DROP TABLE renthistory
       ''');
+      await db.execute('''
+      CREATE TABLE renthistory (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        userid INTEGER NOT NULL,
+        carid INTEGER NOT NULL,
+        rentdate TEXT NOT NULL,
+        rentdurationdays INTEGER NOT NULL,
+        isRentActive INTEGER NOT NULL,
+        FOREIGN KEY (userid) REFERENCES users (id) ON DELETE CASCADE,
+        FOREIGN KEY (carid) REFERENCES cars (carid) ON DELETE CASCADE
+      )
+      ''');
+      // await db.execute('''
+      //   DELETE FROM cars
+      // ''');
 
-      await _insertInitialCars(db);
+      // await _insertInitialCars(db);
     }
   }
 
