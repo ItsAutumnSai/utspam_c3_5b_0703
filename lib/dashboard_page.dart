@@ -14,20 +14,63 @@ class DashboardPage extends StatefulWidget {
 class _DashboardPageState extends State<DashboardPage> {
   int _selectedIndex = 0;
 
-  late List<Widget> _widgetOptions;
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+  }
+
+  TableRow _buildTableRow(String label, String value) {
+    return TableRow(
+      children: [
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Text(
+            label,
+            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Text(
+            value,
+            style: TextStyle(fontSize: 16, color: Colors.blueGrey.shade700),
+          ),
+        ),
+      ],
+    );
+  }
 
   @override
-  void initState() {
-    super.initState();
-    _widgetOptions = <Widget>[
+  Widget build(BuildContext context) {
+    final List<Widget> widgetOptions = <Widget>[
       // Profile Page (Index 0)
-      Center(
+      Padding(
+        padding: const EdgeInsets.all(16.0),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text("Email: ${widget.user.email}"),
-            Text("Phone: ${widget.user.phone}"),
-            Text("Address: ${widget.user.address}"),
+            const Text(
+              "Account Information",
+              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 20),
+            Table(
+              border: TableBorder.all(color: Colors.grey),
+              columnWidths: const {
+                0: IntrinsicColumnWidth(),
+                1: FlexColumnWidth(),
+              },
+              defaultVerticalAlignment: TableCellVerticalAlignment.middle,
+              children: [
+                _buildTableRow("Name", widget.user.name),
+                _buildTableRow("Username", widget.user.username),
+                _buildTableRow("NIK", widget.user.nik),
+                _buildTableRow("Email", widget.user.email),
+                _buildTableRow("Phone", widget.user.phone),
+                _buildTableRow("Address", widget.user.address),
+              ],
+            ),
           ],
         ),
       ),
@@ -36,16 +79,7 @@ class _DashboardPageState extends State<DashboardPage> {
       // History Page (Index 2)
       Center(),
     ];
-  }
 
-  void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -65,8 +99,9 @@ class _DashboardPageState extends State<DashboardPage> {
         ],
         automaticallyImplyLeading: false,
       ),
-      body: _widgetOptions.elementAt(_selectedIndex),
+      body: widgetOptions.elementAt(_selectedIndex),
       bottomNavigationBar: BottomNavigationBar(
+        iconSize: 32,
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profile'),
           BottomNavigationBarItem(icon: Icon(Icons.explore), label: 'Explore'),
