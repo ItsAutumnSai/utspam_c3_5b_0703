@@ -80,7 +80,7 @@ class _RentPageState extends State<RentPage> {
       ScaffoldMessenger.of(
         context,
       ).showSnackBar(const SnackBar(content: Text("Rent successful!")));
-      Navigator.pop(context);
+      Navigator.pop(context, true);
     }
   }
 

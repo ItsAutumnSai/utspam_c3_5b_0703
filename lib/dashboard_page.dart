@@ -183,14 +183,17 @@ class _DashboardPageState extends State<DashboardPage> {
                           right: 20,
                           child: FloatingActionButton.extended(
                             backgroundColor: Colors.white,
-                            onPressed: () {
-                              Navigator.push(
+                            onPressed: () async {
+                              final result = await Navigator.push(
                                 context,
                                 MaterialPageRoute(
                                   builder: (context) =>
                                       RentPage(car: car, user: widget.user),
                                 ),
                               );
+                              if (result == true) {
+                                setState(() {});
+                              }
                             },
                             label: Text(
                               "Rent",
@@ -310,6 +313,9 @@ class _DashboardPageState extends State<DashboardPage> {
                       if (isRentActive == 0) {
                         statusText = "Cancelled";
                         statusColor = Colors.red.shade800;
+                      } else if (now.isBefore(rentDate)) {
+                        statusText = "Inactive yet";
+                        statusColor = Colors.blueGrey;
                       } else if (now.isAfter(endDate)) {
                         statusText = "Finished";
                         statusColor = Colors.blueGrey;
