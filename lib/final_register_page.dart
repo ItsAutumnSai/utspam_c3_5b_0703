@@ -1,19 +1,82 @@
 import 'package:flutter/material.dart';
 import 'db/users_dao.dart';
-import 'dashboard_page.dart';
+import 'login_page.dart';
 
-class LoginPage extends StatelessWidget {
-  const LoginPage({super.key});
+class FinalRegisterPage extends StatefulWidget {
+  final String name;
+  final String nik;
+  final String email;
+  final String phone;
+  final String address;
+
+  const FinalRegisterPage({
+    super.key,
+    required this.name,
+    required this.nik,
+    required this.email,
+    required this.phone,
+    required this.address,
+  });
+
+  @override
+  State<FinalRegisterPage> createState() => _FinalRegisterPageState();
+}
+
+class _FinalRegisterPageState extends State<FinalRegisterPage> {
+  final _formKey = GlobalKey<FormState>();
+  final _usernameController = TextEditingController();
+  final _passwordController = TextEditingController();
+  final UsersDao _usersDao = UsersDao();
+
+  Future<void> _register() async {
+    if (_formKey.currentState!.validate()) {
+      final username = _usernameController.text;
+      final password = _passwordController.text;
+
+      // Check if user exists
+      final existingUser = await _usersDao.getUserByUsername(username);
+      if (existingUser != null) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('User already exists with the same username'),
+            ),
+          );
+        }
+        return;
+      }
+
+      // Register user
+      await _usersDao.registerUser(
+        username: username,
+        password: password,
+        name: widget.name,
+        nik: widget.nik,
+        email: widget.email,
+        phone: widget.phone,
+        address: widget.address,
+      );
+
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Register success, now please login')),
+        );
+        Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(builder: (context) => LoginPage()),
+          (route) => false,
+        );
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
-    final _formKey = GlobalKey<FormState>();
-    final _usernameController = TextEditingController();
-    final _passwordController = TextEditingController();
+
     return Scaffold(
-      appBar: AppBar(title: Text("Login")),
+      appBar: AppBar(title: Text("One last thing")),
       body: SafeArea(
         child: Form(
           key: _formKey,
@@ -22,6 +85,8 @@ class LoginPage extends StatelessWidget {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
+                Text("Create your account", style: TextStyle(fontSize: 30)),
+                SizedBox(height: screenHeight * 0.02),
                 TextFormField(
                   controller: _usernameController,
                   decoration: InputDecoration(
@@ -45,7 +110,7 @@ class LoginPage extends StatelessWidget {
                   ),
                   obscureText: true,
                   validator: (value) {
-                    if (value!.isEmpty) {
+                    if (value == null || value.isEmpty) {
                       return "Please enter your password.";
                     } else if (value.length < 8) {
                       return "Please enter a minimum of 8 characters.";
@@ -58,39 +123,9 @@ class LoginPage extends StatelessWidget {
                 SizedBox(
                   width: screenWidth,
                   child: ElevatedButton(
-                    onPressed: () {
-                      if (_formKey.currentState!.validate()) {
-                        final username = _usernameController.text;
-                        final password = _passwordController.text;
-                        final usersDao = UsersDao();
-
-                        usersDao.authenticate(username, password).then((user) {
-                          if (user != null) {
-                            if (context.mounted) {
-                              Navigator.pushReplacement(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) =>
-                                      DashboardPage(user: user),
-                                ),
-                              );
-                            }
-                          } else {
-                            if (context.mounted) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                  content: Text(
-                                    "Username and password doesn't match",
-                                  ),
-                                ),
-                              );
-                            }
-                          }
-                        });
-                      }
-                    },
+                    onPressed: _register,
                     child: Text(
-                      "Login",
+                      "Register",
                       style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.bold,

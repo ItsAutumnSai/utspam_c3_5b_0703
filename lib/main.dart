@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:utspam_c3_5b_0703/db/db_helper.dart';
 import 'package:utspam_c3_5b_0703/front_page.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await DbHelper().database;
   runApp(const MyApp());
 }
 
