@@ -7,7 +7,6 @@ import 'rent_page.dart';
 
 class DashboardPage extends StatefulWidget {
   final Users user;
-
   const DashboardPage({super.key, required this.user});
 
   @override
@@ -115,7 +114,7 @@ class _DashboardPageState extends State<DashboardPage> {
                       vertical: 25,
                     ),
                     decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(20.0),
+                      borderRadius: BorderRadius.circular(10.0),
                       image: DecorationImage(
                         image: AssetImage(car.carImagePath),
                         fit: BoxFit.cover,
@@ -167,16 +166,23 @@ class _DashboardPageState extends State<DashboardPage> {
                           bottom: 20,
                           right: 20,
                           child: FloatingActionButton.extended(
+                            backgroundColor: Colors.white,
                             onPressed: () {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) => const RentPage(),
+                                  builder: (context) => RentPage(car: car),
                                 ),
                               );
                             },
-                            label: const Text("Rent"),
-                            icon: const Icon(Icons.car_rental),
+                            label: Text(
+                              "Rent",
+                              style: TextStyle(color: Colors.blueGrey.shade700),
+                            ),
+                            icon: Icon(
+                              Icons.car_rental,
+                              color: Colors.blueGrey.shade700,
+                            ),
                           ),
                         ),
                       ],
@@ -185,12 +191,20 @@ class _DashboardPageState extends State<DashboardPage> {
                 },
               ),
               Positioned(
-                left: 10,
+                left: 5,
                 top: 0,
                 bottom: 0,
                 child: Center(
                   child: IconButton(
-                    icon: const Icon(Icons.arrow_back_ios, size: 30),
+                    icon: const Icon(
+                      Icons.arrow_back_ios,
+                      size: 30,
+                      color: Colors.white,
+                      shadows: [
+                        Shadow(blurRadius: 20, color: Colors.black),
+                        Shadow(blurRadius: 20, color: Colors.black),
+                      ],
+                    ),
                     onPressed: () {
                       _pageController.previousPage(
                         duration: const Duration(milliseconds: 300),
@@ -201,12 +215,20 @@ class _DashboardPageState extends State<DashboardPage> {
                 ),
               ),
               Positioned(
-                right: 10,
+                right: 5,
                 top: 0,
                 bottom: 0,
                 child: Center(
                   child: IconButton(
-                    icon: const Icon(Icons.arrow_forward_ios, size: 30),
+                    icon: const Icon(
+                      Icons.arrow_forward_ios,
+                      size: 30,
+                      color: Colors.white,
+                      shadows: [
+                        Shadow(blurRadius: 20, color: Colors.black),
+                        Shadow(blurRadius: 20, color: Colors.black),
+                      ],
+                    ),
                     onPressed: () {
                       _pageController.nextPage(
                         duration: const Duration(milliseconds: 300),

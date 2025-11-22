@@ -23,7 +23,7 @@ class DbHelper {
     final path = join(dbPath, dbName);
     return await openDatabase(
       path,
-      version: 3,
+      version: 4,
       onCreate: _onCreate,
       onUpgrade: _onUpgrade,
       onConfigure: _onConfigure,
@@ -72,7 +72,7 @@ class DbHelper {
   }
 
   Future _onUpgrade(Database db, int oldVersion, int newVersion) async {
-    if (oldVersion < 3) {
+    if (oldVersion < 4) {
       await db.execute('''
         DELETE FROM cars 
       ''');
@@ -87,42 +87,42 @@ class DbHelper {
         'carname': 'Toyota Crown 2.4',
         'cartype': 'Luxury sedan',
         'carpriceperday': '2000000',
-        'carimagepath': 'assets/images/toyotacrown.png',
+        'carimagepath': 'assets/images/cars/toyotacrown.png',
         'isavailable': 1,
       },
       {
         'carname': 'BYD Atto 3',
         'cartype': 'Electric MPV',
         'carpriceperday': '2000000',
-        'carimagepath': 'assets/images/bydatto3.png',
+        'carimagepath': 'assets/images/cars/bydatto3.png',
         'isavailable': 1,
       },
       {
-        'carname': 'MINI Coopoer S Cabrio',
+        'carname': 'MINI Cooper S Cabrio',
         'cartype': 'Hatchback',
         'carpriceperday': '3500000',
-        'carimagepath': 'assets/images/minicoopers.png',
+        'carimagepath': 'assets/images/cars/minicoopers.png',
         'isavailable': 1,
       },
       {
         'carname': 'Toyota Avanza',
         'cartype': 'MPV',
         'carpriceperday': '350000',
-        'carimagepath': 'assets/images/avanza.png',
+        'carimagepath': 'assets/images/cars/avanza.png',
         'isavailable': 1,
       },
       {
         'carname': 'Honda Brio',
         'cartype': 'Hatchback',
         'carpriceperday': '300000',
-        'carimagepath': 'assets/images/brio.png',
+        'carimagepath': 'assets/images/cars/brio.png',
         'isavailable': 1,
       },
       {
         'carname': 'Toyota Fortuner',
         'cartype': 'SUV',
         'carpriceperday': '650000',
-        'carimagepath': 'assets/images/fortuner.png',
+        'carimagepath': 'assets/images/cars/fortuner.png',
         'isavailable': 1,
       },
     ];
