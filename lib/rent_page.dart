@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:utspam_c3_5b_0703/db/renthistory_dao.dart';
+import 'package:utspam_c3_5b_0703/db/cars_dao.dart';
 import 'package:utspam_c3_5b_0703/model/Cars.dart';
 import 'package:utspam_c3_5b_0703/model/RentHistory.dart';
 import 'package:utspam_c3_5b_0703/model/Users.dart';
 
+//TODO: BUG need to disallow user to pick date / duration when selected car is being rented
 class RentPage extends StatefulWidget {
   final Cars car;
   final Users user;
@@ -70,6 +72,9 @@ class _RentPageState extends State<RentPage> {
     );
 
     await _rentHistoryDao.addRent(rentHistory);
+
+    // Set car availability to false
+    await CarsDao().updateCarAvailability(widget.car.carid!, false);
 
     if (mounted) {
       ScaffoldMessenger.of(

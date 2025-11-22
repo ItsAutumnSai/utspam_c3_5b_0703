@@ -22,6 +22,19 @@ class _DashboardPageState extends State<DashboardPage> {
   final PageController _pageController = PageController(initialPage: 1000);
 
   @override
+  void initState() {
+    super.initState();
+    _checkExpiredRents();
+  }
+
+  Future<void> _checkExpiredRents() async {
+    await _rentHistoryDao.checkAndUpdateExpiredRents();
+    if (mounted) {
+      setState(() {});
+    }
+  }
+
+  @override
   void dispose() {
     _pageController.dispose();
     super.dispose();
@@ -296,13 +309,13 @@ class _DashboardPageState extends State<DashboardPage> {
 
                       if (isRentActive == 0) {
                         statusText = "Cancelled";
-                        statusColor = Colors.red;
+                        statusColor = Colors.red.shade800;
                       } else if (now.isAfter(endDate)) {
                         statusText = "Finished";
-                        statusColor = Colors.green;
+                        statusColor = Colors.blueGrey;
                       } else {
                         statusText = "Active";
-                        statusColor = Colors.blue;
+                        statusColor = Colors.lightGreen;
                       }
 
                       return Card(
@@ -348,7 +361,9 @@ class _DashboardPageState extends State<DashboardPage> {
                                 ],
                               ),
                               const SizedBox(height: 8),
-                              Text("Date: $rentDateStr"),
+                              Text(
+                                "Date: $rentDateStr to ${DateFormat('yyyy-MM-dd').format(endDate)}",
+                              ),
                               const SizedBox(height: 4),
                               Text(
                                 "Total Price: Rp ${totalPrice.toStringAsFixed(0)}",
