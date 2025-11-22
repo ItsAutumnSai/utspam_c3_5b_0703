@@ -4,6 +4,8 @@ import 'model/Users.dart';
 import 'model/Cars.dart';
 import 'db/cars_dao.dart';
 import 'rent_page.dart';
+import 'db/renthistory_dao.dart';
+import 'package:intl/intl.dart';
 
 class DashboardPage extends StatefulWidget {
   final Users user;
@@ -16,6 +18,7 @@ class DashboardPage extends StatefulWidget {
 class _DashboardPageState extends State<DashboardPage> {
   int _selectedIndex = 1;
   final CarsDao _carsDao = CarsDao();
+  final RentHistoryDao _rentHistoryDao = RentHistoryDao();
   final PageController _pageController = PageController(initialPage: 1000);
 
   @override
@@ -244,7 +247,129 @@ class _DashboardPageState extends State<DashboardPage> {
         },
       ),
       // History Page (Index 2)
-      Center(),
+      Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text(
+              "Recent Transactions",
+              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 20),
+            Expanded(
+              child: FutureBuilder<List<Map<String, dynamic>>>(
+                future: _rentHistoryDao.getRentHistoryWithCars(widget.user.id!),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(child: CircularProgressIndicator());
+                  } else if (snapshot.hasError) {
+                    return Center(child: Text("Error: ${snapshot.error}"));
+                  } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                    return const Center(child: Text("No rent history found"));
+                  }
+
+                  final history = snapshot.data!;
+
+                  return ListView.builder(
+                    itemCount: history.length,
+                    itemBuilder: (context, index) {
+                      final item = history[index];
+                      final carName = item['carname'] as String;
+                      final rentDateStr = item['rentdate'] as String;
+                      final rentDuration = item['rentdurationdays'] as int;
+                      final pricePerDayStr = item['carpriceperday'] as String;
+                      final isRentActive = item['isRentActive'] as int;
+                      final pricePerDay = double.tryParse(pricePerDayStr) ?? 0;
+                      final totalPrice = pricePerDay * rentDuration;
+
+                      final rentDate = DateFormat(
+                        'yyyy-MM-dd',
+                      ).parse(rentDateStr);
+                      final endDate = rentDate.add(
+                        Duration(days: rentDuration),
+                      );
+                      final now = DateTime.now();
+
+                      String statusText;
+                      Color statusColor;
+
+                      if (isRentActive == 0) {
+                        statusText = "Cancelled";
+                        statusColor = Colors.red;
+                      } else if (now.isAfter(endDate)) {
+                        statusText = "Finished";
+                        statusColor = Colors.green;
+                      } else {
+                        statusText = "Active";
+                        statusColor = Colors.blue;
+                      }
+
+                      return Card(
+                        margin: const EdgeInsets.only(bottom: 16),
+                        elevation: 4,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.all(16.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    carName,
+                                    style: const TextStyle(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  Container(
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 8,
+                                      vertical: 4,
+                                    ),
+                                    decoration: BoxDecoration(
+                                      color: statusColor.withOpacity(0.1),
+                                      borderRadius: BorderRadius.circular(8),
+                                      border: Border.all(color: statusColor),
+                                    ),
+                                    child: Text(
+                                      statusText,
+                                      style: TextStyle(
+                                        color: statusColor,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(height: 8),
+                              Text("Date: $rentDateStr"),
+                              const SizedBox(height: 4),
+                              Text(
+                                "Total Price: Rp ${totalPrice.toStringAsFixed(0)}",
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w500,
+                                  color: Colors.blueGrey.shade700,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      );
+                    },
+                  );
+                },
+              ),
+            ),
+          ],
+        ),
+      ),
     ];
 
     return Scaffold(

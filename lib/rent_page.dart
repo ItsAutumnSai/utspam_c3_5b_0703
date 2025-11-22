@@ -66,6 +66,7 @@ class _RentPageState extends State<RentPage> {
       carId: widget.car.carid,
       rentDate: DateFormat('yyyy-MM-dd').format(_selectedDate!),
       rentDurationDays: _rentDuration,
+      isRentActive: 1,
     );
 
     await _rentHistoryDao.addRent(rentHistory);
