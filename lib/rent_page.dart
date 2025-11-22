@@ -101,34 +101,50 @@ class _RentPageState extends State<RentPage> {
                     fit: BoxFit.cover,
                   ),
                 ),
+                child: Stack(
+                  children: [
+                    Positioned(
+                      bottom: 10,
+                      left: 10,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            widget.car.carName,
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                              shadows: [
+                                Shadow(blurRadius: 10, color: Colors.black),
+                              ],
+                            ),
+                          ),
+                          Text(
+                            widget.car.carType,
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 16,
+                              shadows: [
+                                Shadow(blurRadius: 10, color: Colors.black),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
               ),
-              const SizedBox(height: 20),
-
-              // Car Details
+              const SizedBox(height: 15),
               Text(
-                widget.car.carName,
+                "Renting as ${widget.user.name}.",
                 style: const TextStyle(
-                  fontSize: 24,
+                  fontSize: 16,
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              Text(
-                widget.car.carType,
-                style: TextStyle(fontSize: 18, color: Colors.grey[600]),
-              ),
-              const SizedBox(height: 20),
-
-              // User Info
-              Text(
-                "Renting as: ${widget.user.name}",
-                style: const TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-              const SizedBox(height: 20),
-
-              // Date Picker
+              const SizedBox(height: 10),
               const Text("Rent Date:", style: TextStyle(fontSize: 16)),
               const SizedBox(height: 8),
               InkWell(
@@ -156,9 +172,7 @@ class _RentPageState extends State<RentPage> {
                   ),
                 ),
               ),
-              const SizedBox(height: 20),
-
-              // Duration Input
+              const SizedBox(height: 10),
               const Text("Duration (Days):", style: TextStyle(fontSize: 16)),
               const SizedBox(height: 8),
               Row(
